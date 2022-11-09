@@ -31,7 +31,7 @@
 						<th>データ状態</th>
 						<th>登録日時</th>
 						<th>更新日時</th>
-						<!-- <th></th> -->
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -53,17 +53,28 @@
 
 						<td><input type="text" class="form-control" th:field="*{dataList[__${st.index}__].studentName}"></td>
 
-						<td><input type="text" class="form-control" th:field="*{dataList[__${st.index}__].StudentSex}"></td>
+						<td>
+							<select th:field="*{dataList[__${st.index}__].StudentSex}" class="form-control">
+								<option th:value="1" th:text="男"></option>
+								<option th:value="2" th:text="女"></option>
+							</select>
+						</td>
 
 						<td><input type="text" class="form-control" th:field="*{dataList[__${st.index}__].StudentAge}"></td>
 
-						<td><input type="text" class="form-control" th:field="*{dataList[__${st.index}__].dataStatus}"></td>
+						<td>
+							<select th:field="*{dataList[__${st.index}__].dataStatus}" class="form-control">
+								<option th:value="1" th:text="Valid"></option>
+								<option th:value="2" th:text="Deleted"></option>
+							</select>
+						</td>
 
 						<td th:text="${#dates.format(studentItem.registeredDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
 						<td th:text="${#dates.format(studentItem.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
 
-						<!-- <td><a th:href="@{/mstStudent/{id}(id=*{dataList[__${st.index}__].studentId})}"
-								class="btn btn-secondary">詳細</a></td> -->
+						<td><a onclick="if (! confirm('are you sure?')) { return false; }"
+								th:href="@{/mstStudent/delete/{id}(id=*{dataList[__${st.index}__].studentId})}"
+								class="btn btn-danger">削除</a></td>
 					</tr>
 
 				</tbody>

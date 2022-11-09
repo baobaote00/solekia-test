@@ -1,11 +1,14 @@
 package com.example.demo.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+
+import com.example.demo.entity.MstStudent;
 
 import lombok.Data;
 
@@ -37,4 +40,8 @@ public class ClassRequest implements Serializable {
   @Min(value=0, message="データ状態を有効か無効かどちらか選択してください")
 	@Max(value=1, message="データ状態を有効か無効かどちらか選択してください")
   private Integer dataStatus;
+
+  private List<MstStudent> students;
+
+  private List<String> studentsId;
 }

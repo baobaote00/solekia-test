@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,12 +14,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.dto.StudentListParam;
 import com.example.demo.dto.StudentRequest;
-import com.example.demo.entity.MstStudent;
 import com.example.demo.service.MstStudentService;
 
 /**
@@ -57,68 +54,74 @@ public class MstStudentController {
 	}
 
 	/**
-	 * クラス新規登録画面を表示
-	 * 
-	 * @param model Model
-	 * @return クラス情報一覧画面
+	 * 学生情報一覧更新
+	 * @param userListParam
+	 * @param result
+	 * @param model
+	 * @return
 	 */
+	@PostMapping(value = "/mstStudent/listUpdate")
+	public String updateList(@Validated @ModelAttribute StudentListParam userListParam, BindingResult result,
+			Model model) {
+
+		if (result.hasErrors()) {
+			List<String> errorList = new ArrayList<String>();
+			for (ObjectError error : result.getAllErrors()) {
+				if (!errorList.contains(error.getDefaultMessage())) {
+					errorList.add(error.getDefaultMessage());
+				}
+			}
+			model.addAttribute("listMstStudent", userListParam);
+			model.addAttribute("validationError", errorList);
+			return "mstStudent/list";
+		}
+		
+		// 学生情報の更新
+		mstStudentService.updateAll(userListParam);
+		return "redirect:/mstStudent/list";
+	}
+
+	@GetMapping("/mstStudent/delete/{id}")
+	public String displayView(@PathVariable Long id, Model model) {
+		mstStudentService.delete(id);
+
+		return "redirect:/mstStudent/list";
+	}
+
 	@GetMapping(value = "/mstStudent/add")
 	public String displayAdd(Model model) {
 		StudentRequest studentRequest = new StudentRequest();
 		studentRequest.setDataStatus(0);
 		model.addAttribute("studentRequest", studentRequest);
-		model.addAttribute("gender", initRadioGender());
 		return "MstStudent/add";
 	}
 
 	/**
-	 * クラス情報詳細画面を表示
-	 * 
-	 * @param id    表示するクラスID
-	 * @param model Model
-	 * @return クラス情報詳細画面
+	 * 学生情報一覧更新
+	 * @param userListParam
+	 * @param result
+	 * @param model
+	 * @return
 	 */
-	@GetMapping("/mstStudent/{id}")
-	public String displayView(@PathVariable Long id, Model model) {
-		Optional<MstStudent> mstStudent = mstStudentService.searchByID(id);
-		if (mstStudent != null) {
-			model.addAttribute("mstStudent", mstStudent.get());
-		}
-		return "MstStudent/detail";
-	}
-
-	/**
-	 * create new class
-	 * 
-	 * @param classRequest request form client
-	 * @param result       result error
-	 * @return クラス情報詳細画面
-	 */
-	@RequestMapping(value = "/mstStudent/create", method = RequestMethod.POST)
-	public String createNewStudent(@Validated @ModelAttribute StudentRequest studentRequest, BindingResult result,
+	@PostMapping(value = "/mstStudent/create")
+	public String create(@Validated @ModelAttribute StudentRequest studentRequest, BindingResult result,
 			Model model) {
+
 		if (result.hasErrors()) {
 			List<String> errorList = new ArrayList<String>();
 			for (ObjectError error : result.getAllErrors()) {
-				errorList.add(error.getDefaultMessage());
+				if (!errorList.contains(error.getDefaultMessage())) {
+					errorList.add(error.getDefaultMessage());
+				}
 			}
+			model.addAttribute("listMstStudent", studentRequest);
 			model.addAttribute("validationError", errorList);
-			return "MstStudent/add";
+			return "mstStudent/add";
 		}
+		
+		// 学生情報の更新
 		mstStudentService.create(studentRequest);
 		return "redirect:/mstStudent/list";
 	}
 
-	/**
-	 * delete a class
-	 * 
-	 * @param id    id of class delete
-	 * @param model send data
-	 * @return
-	 */
-	@GetMapping("/mstStudent/delete/{id}")
-	public String delete(@PathVariable Long id, Model model) {
-		mstStudentService.delete(id);
-		return "redirect:/mstStudent/list";
-	}
 }

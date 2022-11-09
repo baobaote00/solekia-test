@@ -25,12 +25,41 @@
 				<input th:field="*{className}" class="form-control">
 			</div>
 			<span>クラス状態</span><span class="text-danger">※</span>
-			<div class="mb-3" th:each="ty : ${type}">             
+			<div class="mb-3" th:each="ty : ${type}">
 				<div class="form-check">
 					<input class="form-check-input" th:field="*{dataStatus}" th:value="${ty.value}" type="radio" value="0" />
 					<label class="form-check-label" th:text="${ty.key}" th:for="dataStatus+${ty.value+1}"></label>
 				</div>
 			</div>
+
+			<table class="table table-bordered">
+				<thead>
+					<tr class="bg-info">
+						<th scope="col" style="width: 120px;">メンバー</th>
+						<th scope="col">ID</th>
+						<th scope="col">学生名</th>
+						<th scope="col">性別</th>
+						<th scope="col">年齢</th>
+						<th scope="col">状態</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="sts : ${studentRequest}" th:object="${sts}"
+						th:class="*{!getContant(__${classRequest.classId}__)} ? 'bg-secondary'">
+						<th>
+							<div class="form-check d-flex justify-content-center">
+								<input type="checkbox" class="form-check-input" id="check1" name="studentsId" th:checked="*{getContant(__${classRequest.classId}__)} ? 'checked'" />
+							</div>
+						</th>
+						<th th:text="*{studentId}"></th>
+						<td th:text="*{studentName}"></td>
+						<td th:text="*{studentSex}"></td>
+						<td th:text="*{studentAge}"></td>
+						<td th:text="*{getDataStatusText}"></td>
+					</tr>
+				</tbody>
+			</table>
+
 			<a href="/mstClass/list" type="submit" class="btn btn-secondary me-2">戻る</a>
 			<button type="submit" value="update" name="action" class="btn btn-primary me-2">更新</button>
 			<button type="submit" value="delete" name="action" class="btn btn-danger me-2">削除</button>

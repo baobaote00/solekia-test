@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.demo.dto.ClassRequest;
+import com.example.demo.dto.StudentRequest;
 import com.example.demo.entity.MstClass;
 import com.example.demo.service.MstClassService;
+import com.example.demo.service.MstStudentService;
 
 /**
  * クラス情報 Controller
@@ -32,7 +34,7 @@ public class MstClassController {
 	public Map<String, Integer> initRadioStatus() {
 		Map<String, Integer> radio = new LinkedHashMap<>();
 		radio.put("有効", 0);
-		radio.put("無効",1);
+		radio.put("無効", 1);
 		return radio;
 	}
 
@@ -41,6 +43,9 @@ public class MstClassController {
 	 */
 	@Autowired
 	private MstClassService mstClassService;
+
+	@Autowired
+	private MstStudentService mstStudentService;
 	ModelMapper modelMapper = new ModelMapper();
 
 	/**
@@ -81,18 +86,21 @@ public class MstClassController {
 	@GetMapping("/mstClass/{id}")
 	public String displayView(@PathVariable Long id, Model model) {
 		Optional<MstClass> mstClass = mstClassService.searchByID(id);
+
+		ClassRequest classRequest;
+
 		if (mstClass.isPresent()) {
-			ClassRequest classRequest = modelMapper.map(mstClass.get(), ClassRequest.class);
-			model.addAttribute("classRequest", classRequest);
-			model.addAttribute("type", initRadioStatus());
+			classRequest = modelMapper.map(mstClass.get(), ClassRequest.class);
 		} else {
-			ClassRequest classRequest = new ClassRequest();
+			classRequest = new ClassRequest();
 			classRequest.setClassId(id);
-			model.addAttribute("type", initRadioStatus());
-			model.addAttribute("classRequest", classRequest);
 			model.addAttribute("notFound", true);
 		}
 
+		model.addAttribute("type", initRadioStatus());
+		model.addAttribute("classRequest", classRequest);
+		model.addAttribute("studentRequest", mstStudentService.searchAll().getDataList());
+		
 		return "MstClass/detail";
 	}
 
@@ -137,7 +145,7 @@ public class MstClassController {
 	}
 
 	@RequestMapping(value = "/mstClass/update", method = RequestMethod.POST, params = "action=delete")
-	public String delete(@Validated @ModelAttribute ClassRequest classRequest,BindingResult result, Model model) {
+	public String delete(@Validated @ModelAttribute ClassRequest classRequest, BindingResult result, Model model) {
 		try {
 			mstClassService.delete(classRequest.getClassId());
 		} catch (Exception e) {

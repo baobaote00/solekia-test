@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,9 +42,29 @@ public class MstStudentService {
 		List<MstStudent> allDataList = mstStudentRepository.findAll();
 
 		StudentListParam retData = new StudentListParam();
-		retData.setDataList(modelMapper.map(allDataList, new TypeToken<List<StudentRequest>>() {}.getType()));
+		retData.setDataList(modelMapper.map(allDataList, new TypeToken<List<StudentRequest>>() {
+		}.getType()));
 
-		return  retData;
+		return retData;
+	}
+
+	@ModelAttribute("mstStudent")
+	public List<MstStudent> updateAll(StudentListParam studentListParam) {
+
+		Date now = new Date();
+		List<StudentRequest> allDataList = studentListParam.getDataList();
+		List<MstStudent> retData = new ArrayList<MstStudent>();
+
+		for (StudentRequest dataItem : allDataList) {
+
+			MstStudent newParam = new MstStudent();
+			BeanUtils.copyProperties(dataItem, newParam);
+			newParam.setUpdatedDate(now);
+			retData.add(newParam);
+
+		}
+
+		return mstStudentRepository.saveAll(retData);
 	}
 
 	@ModelAttribute("mstStudent")
