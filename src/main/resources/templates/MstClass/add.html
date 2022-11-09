@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Insert title here</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>クラス情報登録</h1>
+
+      <div th:if="${validationError}" th:each="error : ${validationError}">
+        <label class="text-danger" th:text="${error}"></label>
+      </div>
+
+      <div class="w-50">
+        <form
+          th:action="@{/mstClass/create}"
+          th:object="${classRequest}"
+          th:method="post"
+        >
+          <div class="form-group">
+            <label>クラス名<span class="text-danger">※</span></label>
+            <input type="text" th:field="*{className}" class="form-control" />
+            <input type="hidden" th:field="*{dataStatus}" />
+          </div>
+
+          <div class="text-left">
+            <a href="/mstClass/list" class="btn btn-secondary m-3">戻る</a>
+            <input type="submit" value="登録" class="btn btn-primary" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
