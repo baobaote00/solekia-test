@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.demo.dto.ClassRequest;
 import com.example.demo.entity.MstClass;
+import com.example.demo.entity.MstClassStudent;
+import com.example.demo.entity.MstClassStudentId;
+import com.example.demo.entity.MstStudent;
 import com.example.demo.repository.MstClassRepository;
+import com.example.demo.repository.MstClassStudentRepository;
+import com.example.demo.repository.MstStudentRepository;
 
 /**
  * クラス情報 Service
@@ -30,7 +36,8 @@ public class MstClassService {
 	 */
 	@Autowired
 	private MstClassRepository mstClassRepository;
-
+	@Autowired
+	private MstStudentRepository mstStudentRepository;
 	/**
 	 * クラス情報 全検索
 	 * 
@@ -60,6 +67,31 @@ public class MstClassService {
 		Date now = new Date();
 		MstClass mstClass = modelMapper.map(classRequest, MstClass.class);
 		mstClass.setUpdatedDate(now);
+		return mstClassRepository.save(mstClass);
+	}
+
+	@ModelAttribute("mstClass")
+	public MstClass updateClassStudent(ClassRequest classRequest) {
+		Date now = new Date();
+		MstClass mstClass = modelMapper.map(classRequest, MstClass.class);
+		mstClass.setUpdatedDate(now);
+		mstClass.setRegisteredDate(now);
+
+		if (mstClass.getStudents() == null) {
+			mstClass.setStudents(new ArrayList<>());
+		}
+
+		for (String studentId : classRequest.getStudentsId()) {
+			Optional<MstStudent> student = mstStudentRepository.findById(Long.parseLong(studentId)); 
+			if (student.isPresent()) {
+				MstClassStudent student2 = new MstClassStudent();
+				student2.setStudent(student.get());
+				student2.setClass1(mstClass);
+				student2.setRegisteredDate(now);
+				mstClass.getStudents().add(student2);
+			}
+		}
+
 		return mstClassRepository.save(mstClass);
 	}
 

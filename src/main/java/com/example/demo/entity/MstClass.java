@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -76,13 +78,8 @@ public class MstClass {
 		return new SimpleDateFormat("yyyy/MM/dd").format(this.updatedDate);
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {
-			CascadeType.PERSIST,
-			CascadeType.MERGE
-	})
-	@JoinTable(name = "trn_enrollement", joinColumns = { @JoinColumn(name = "class_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "student_id") })
-	private List<MstStudent> students = new ArrayList<>();
+	@OneToMany(mappedBy = "class1",cascade = CascadeType.ALL)
+	private Collection<MstClassStudent> students = new ArrayList<>();
 
 	@Override
 	public String toString() {

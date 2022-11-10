@@ -48,7 +48,7 @@
 						th:class="*{!getContant(__${classRequest.classId}__)} ? 'bg-secondary'">
 						<th>
 							<div class="form-check d-flex justify-content-center">
-								<input type="checkbox" class="form-check-input" id="check1" name="studentsId" th:checked="*{getContant(__${classRequest.classId}__)} ? 'checked'" />
+								<input type="checkbox" class="form-check-input" id="check1" th:value="*{studentId}" name="studentsId" th:checked="*{getContant(__${classRequest.classId}__)} ? 'checked'" />
 							</div>
 						</th>
 						<th th:text="*{studentId}"></th>

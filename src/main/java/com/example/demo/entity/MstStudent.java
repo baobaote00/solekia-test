@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import javax.persistence.GeneratedValue;
@@ -73,13 +75,8 @@ public class MstStudent {
 	@Column(name = "updated_date")
 	private Date updatedDate;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {
-			CascadeType.PERSIST,
-			CascadeType.MERGE
-	})
-	@JoinTable(name = "trn_enrollement", joinColumns = { @JoinColumn(name = "student_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "class_id") })
-	private List<MstClass> className = new ArrayList<MstClass>();
+	@OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
+	private Collection<MstClassStudent> className = new ArrayList<MstClassStudent>();
 
 	public String getDataStatusText() {
 		return MstClass.initRadioStatus().get(dataStatus);
