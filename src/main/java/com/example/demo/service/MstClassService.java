@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.demo.dto.ClassRequest;
 import com.example.demo.entity.MstClass;
-import com.example.demo.entity.MstClassStudent;
-import com.example.demo.entity.MstClassStudentId;
 import com.example.demo.entity.MstStudent;
 import com.example.demo.repository.MstClassRepository;
-import com.example.demo.repository.MstClassStudentRepository;
 import com.example.demo.repository.MstStudentRepository;
 
 /**
@@ -84,11 +81,7 @@ public class MstClassService {
 		for (String studentId : classRequest.getStudentsId()) {
 			Optional<MstStudent> student = mstStudentRepository.findById(Long.parseLong(studentId)); 
 			if (student.isPresent()) {
-				MstClassStudent student2 = new MstClassStudent();
-				student2.setStudent(student.get());
-				student2.setClass1(mstClass);
-				student2.setRegisteredDate(now);
-				mstClass.getStudents().add(student2);
+				mstClass.getStudents().add(student.get());
 			}
 		}
 

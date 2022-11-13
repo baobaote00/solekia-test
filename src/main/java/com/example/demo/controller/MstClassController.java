@@ -1,13 +1,10 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.demo.dto.ClassRequest;
-import com.example.demo.dto.StudentRequest;
 import com.example.demo.entity.MstClass;
-import com.example.demo.entity.MstClassStudent;
-import com.example.demo.entity.MstStudent;
 import com.example.demo.service.MstClassService;
 import com.example.demo.service.MstStudentService;
 
@@ -93,15 +87,6 @@ public class MstClassController {
 		Optional<MstClass> mstClass = mstClassService.searchByID(id);
 
 		ClassRequest classRequest;
-		// MstClass newMstClass = new MstClass();
-		// newMstClass.getStudents().addAll((mstClass.get().getStudents().stream().map(student
-		// -> {
-		// MstClassStudent newMstClassStudent = new MstClassStudent();
-		// newMstClassStudent.setStudent(student.getStudent());
-		// newMstClassStudent.setClass1(newMstClass);
-		// newMstClassStudent.setRegisteredDate(new Date());
-		// return newMstClassStudent;
-		// }).collect(Collectors.toList())));
 
 		if (mstClass.isPresent()) {
 			classRequest = modelMapper.map(mstClass.get(), ClassRequest.class);

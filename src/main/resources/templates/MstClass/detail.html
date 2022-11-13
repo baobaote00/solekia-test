@@ -27,7 +27,8 @@
 			<span>クラス状態</span><span class="text-danger">※</span>
 			<div class="mb-3" th:each="ty : ${type}">
 				<div class="form-check">
-					<input class="form-check-input" th:field="*{dataStatus}" th:value="${ty.value}" type="radio" value="0" />
+					<input class="form-check-input" th:field="*{dataStatus}" th:value="${ty.value}" onchange="onChangeRadio(this)"
+						type="radio" value="0" />
 					<label class="form-check-label" th:text="${ty.key}" th:for="dataStatus+${ty.value+1}"></label>
 				</div>
 			</div>
@@ -48,7 +49,9 @@
 						th:class="*{!getContant(__${classRequest.classId}__)} ? 'bg-secondary'">
 						<th>
 							<div class="form-check d-flex justify-content-center">
-								<input type="checkbox" class="form-check-input" id="check1" th:value="*{studentId}" name="studentsId" th:checked="*{getContant(__${classRequest.classId}__)} ? 'checked'" />
+								<input type="checkbox" class="form-check-input" id="check1" th:value="*{studentId}"
+									th:attr="disabled=*{dataStatus == 1} ? 'true' : 'false'" name="studentsId"
+									th:checked="*{getContant(__${classRequest.classId}__)} ? 'checked'" onchange="onChange(this)" />
 							</div>
 						</th>
 						<th th:text="*{studentId}"></th>
@@ -79,6 +82,17 @@
 			if (!confirm('クラス情報を削除します。よろしいですか。')) {
 				event.preventDefault();
 			}
+		}
+
+		function onChange(event) {
+			event.classList.toggle("")
+		}
+
+		function onChangeRadio(event) {
+			document.querySelectorAll("tr").forEach((e) => {
+				if (!e.querySelector("input[name='studentsId']")) return
+				e.querySelector("input[name='studentsId']").toggleAttribute("disabled");
+			})
 		}
 	</script>
 

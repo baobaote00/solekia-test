@@ -5,21 +5,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -30,6 +28,7 @@ import lombok.Data;
 @Data
 @Table(name = "mst_class")
 public class MstClass {
+	@JsonIgnore
 	public static Map<Integer, String> initRadioStatus() {
 		Map<Integer, String> radio = new LinkedHashMap<>();
 		radio.put(0, "有効");
@@ -78,8 +77,9 @@ public class MstClass {
 		return new SimpleDateFormat("yyyy/MM/dd").format(this.updatedDate);
 	}
 
-	@OneToMany(mappedBy = "class1",cascade = CascadeType.ALL)
-	private Collection<MstClassStudent> students = new ArrayList<>();
+	@ManyToMany(targetEntity = MstStudent.class)
+	@JoinTable(name = "trn_enrollement", joinColumns = @JoinColumn(name = "class_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "student_id", nullable = false))
+	private Collection<MstStudent> students = new ArrayList<>();
 
 	@Override
 	public String toString() {
